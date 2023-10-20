@@ -32,6 +32,6 @@ ENTRYPOINT [ "java", \
    "-Drunning.in.docker=true", \
    "-Dwebgoat.host=0.0.0.0", \
    "-Dwebwolf.host=0.0.0.0", \
-   "-Dwebgoat.port=8080", \
+   "-Dwebgoat.port=5050", \
    "-Dwebwolf.port=9090", \
    "-jar", "webgoat.jar" ]
