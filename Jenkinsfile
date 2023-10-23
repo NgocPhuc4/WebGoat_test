@@ -10,7 +10,9 @@ pipeline {
         stage('Build') {
             steps {
                 // Run Maven on a Unix agent.
+                sh "mvn spotless:apply"
                 sh "mvn clean install -DskipTests"
+                
             }
         }
     }
