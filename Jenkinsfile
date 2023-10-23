@@ -19,12 +19,6 @@ pipeline {
             steps {
                 sh 'mvn sonar:sonar \
                 -Dsonar.host.url=http://192.168.75.131/:9000 \
-                -Dsonar.projectKey=webgoat
-                -Dsonar.projectName=webgoat
-                -Dsonar.projectVersion=1.0
-                -Dsonar.language=java
-                -Dsonar.java.binaries=target
-                -Dsonar.exclusions=**/*.ts
   }
         }
     }
