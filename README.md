@@ -41,13 +41,13 @@ Already have a browser and ZAP and/or Burp installed on your machine in this cas
 Every release is also published on [DockerHub](https://hub.docker.com/r/webgoat/webgoat).
 
 ```shell
-docker run -it -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 webgoat/webgoat
+docker run -it -p 127.0.0.1:5050:5050 -p 127.0.0.1:9090:9090 webgoat/webgoat
 ```
 
 If you want to reuse the container, give it a name:
 
 ```shell
-docker run --name webgoat -it -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 webgoat/webgoat
+docker run --name webgoat -it -p 127.0.0.1:5050:5050 -p 127.0.0.1:9090:9090 webgoat/webgoat
 ```
 
 As long as you don't remove the container you can use:
@@ -140,6 +140,6 @@ java -jar target/webgoat-2023.4-SNAPSHOT.jar
 Or in a docker run it would (once this version is pushed into docker hub) look like this:
 
 ```Shell
-docker run -d -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 -e EXCLUDE_CATEGORIES="CLIENT_SIDE,GENERAL,CHALLENGE" -e EXCLUDE_LESSONS="SqlInjectionAdvanced,SqlInjectionMitigations" webgoat/webgoat
+docker run -d -p 127.0.0.1:5050:5050 -p 127.0.0.1:9090:9090 -e EXCLUDE_CATEGORIES="CLIENT_SIDE,GENERAL,CHALLENGE" -e EXCLUDE_LESSONS="SqlInjectionAdvanced,SqlInjectionMitigations" webgoat/webgoat
 ```
 
