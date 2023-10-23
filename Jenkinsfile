@@ -22,5 +22,16 @@ pipeline {
                 -Dsonar.token=squ_de60ca0c6e63f0e558d38d7b253e62607e8a6af5'
             }
         }
+        stage('OWASP Dependency-Check Vulnerabilities') {
+            steps {
+                dependencyCheck additionalArguments: ''' 
+                            -o './'
+                            -s './'
+                            -f 'ALL' 
+                            --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+      }
+    }
     }
 }
