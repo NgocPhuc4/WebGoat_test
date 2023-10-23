@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh 'mvn sonar:sonar \
                 -Dsonar.host.url=http://192.168.75.131:9000 \
-                -Dsonar.login=2a0af4e245f2866510b5980d3fd567397489c11b'
+                -Dsonar.token=squ_de60ca0c6e63f0e558d38d7b253e62607e8a6af5'
             }
         }
     }
