@@ -41,7 +41,8 @@ pipeline {
         }
         stage('Analyze with Grype') {
             steps {
-                  sh '/var/jenkins_home/bin/grype -o json ${REPOSITORY}:${BUILD_NUMBER} > ${JOB_BASE_NAME}.vuln.json'
+                      grypeScan scanDest: 'docker:webgoat/webgoat', repName: 'Grype_report.txt', autoInstall:true
+                        
             }
         }
      }
