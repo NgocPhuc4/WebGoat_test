@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    environment {
+        REPOSITORY = "${DOCKER_HUB_USR}/${JOB_BASE_NAME}"
+        // what severity level do we want to gate on? (this is optional, see the "analyze with grype" stage)
+        // VULN_THRESHOLD = "critical"
+        // use GIT_BRANCH for when we "promote" image:
+        BRANCH_NAME = "${GIT_BRANCH.split("/")[1]}"
+    } // end environment
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "maven"
+    }
+    
+
+    stages {
+        stage('Build') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn spotless:apply"
+                sh "mvn clean install -DskipTests"
+                
+            }
+        }
+        stage('OWASP Dependency-Check Vulnerabilities') {
+            steps {
+                dependencyCheck additionalArguments: ''' 
+                            -o './'
+                            -s './'
+                            -f 'ALL' 
+                            --prettyPrint''', odcInstallation: 'dependency-check'
+                
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            }
+        }
+        stage('Build the Image') {
+            steps {
+                      // Build the Container Image for scanning
+                      sh "docker build -f Dockerfile . -t webgoat/webgoat"
+                  }
+        }
+        stage('Analyze with Grype') {
+            steps {
+                  sh '/var/jenkins_home/bin/grype -o json ${REPOSITORY}:${BUILD_NUMBER} > ${JOB_BASE_NAME}.vuln.json'
+            }
+        }
+     }
+
+}
