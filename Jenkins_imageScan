@@ -16,26 +16,22 @@ pipeline {
                 
             }
         }
-        stage('OWASP Dependency-Check Vulnerabilities') {
-            steps {
-                dependencyCheck additionalArguments: ''' 
-                            -o './'
-                            -s './'
-                            -f 'ALL' 
-                            --prettyPrint''', odcInstallation: 'dependency-check'
-                
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-        }
         stage('Build the Image') {
             steps {
-                      // Build the Container Image for scanning
-                      sh "docker build -f Dockerfile . -t webgoat/webgoat"
+                // Build the Container Image for scanning
+                sh "docker build -f Dockerfile . -t webgoat/webgoat"
                   }
+        }
+        stage('Generating SBOM with Syft') {
+            steps {
+                script {
+                    sh "/var/jenkins_home/tools/syft webgoat/webgoat --scope all-layers -o spdx-json > /var/jenkins_home/tools/SBOM.spdx.json"
+                } 
+            }
         }
         stage('Analyze with Grype') {
             steps {
-                      grypeScan scanDest: 'docker:webgoat/webgoat', repName: 'Grype_report.txt', autoInstall:true
+                grypeScan scanDest: 'sbom:/var/jenkins_home/tools/SBOM.spdx.json', repName: 'Grype_report.txt', autoInstall:true
                         
             }
         }
