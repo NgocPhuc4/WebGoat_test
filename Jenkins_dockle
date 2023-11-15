@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Image scanning with dockle') {
             steps {
-                sh "dockle webgoat/webgoat -o /var/jenkins_home/tools/dockle_image_report.json"                        
+                sh "dockle -f json -o dockle_report.json webgoat/webgoat"                        
             }
         }
      }
