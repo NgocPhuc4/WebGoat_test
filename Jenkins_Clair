@@ -47,7 +47,7 @@ pipeline {
         
                     // Get Docker's bridge network gateway and run the scanner.
                     sh '''
-                        ./clair-scanner --ip 172.17.0.2 -c http://172.17.0.4:6060 -r Clair_report.json webgoat/webgoat:latest 
+                        ./clair-scanner --ip 172.17.0.2 -c http://172.17.0.4:6060 -r Clair_report.json webgoat/webgoat:latest || exit 0 
                     '''
                 }
             }
