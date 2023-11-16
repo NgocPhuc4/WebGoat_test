@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "maven"
+    }
+    
+
+    stages {
+        stage('Build') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn spotless:apply"
+                sh "mvn clean install -DskipTests"
+                
+            }
+        }
+        stage('Build the Image') {
+            steps {
+                // Build the Container Image for scanning
+                sh "docker build -f Dockerfile . -t webgoat/webgoat"
+                  }
+        }
+        stage('Image Scanning with Clair') {
+            steps {
+                script {
+                    // Ensure the containers are not already running (cleanup from a previous run).
+                    sh 'docker rm -f db || true'
+                    sh 'docker rm -f clair || true'
+        
+                    // Start the Clair database and wait for it to initialize.
+                    sh 'docker run -d --name db arminc/clair-db'
+                    sh 'sleep 15' // Consider a more robust health check here.
+        
+                    // Start the Clair container.
+                    sh 'docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan'
+                    sh 'sleep 1'
+        
+                    // Download the clair-scanner if not already present.
+                    sh '''
+                        if [ ! -f clair-scanner ]; then
+                            wget -qO clair-scanner https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+                            chmod +x clair-scanner
+                        fi
+                    '''
+        
+                    // Get Docker's bridge network gateway and run the scanner.
+                    sh '''
+                        ./clair-scanner webgoat/webgoat || exit 0
+                    '''
+                }
+            }
+            post {
+                always {
+                    // Clean up, remove the Clair and database containers.
+                    sh 'docker rm -f db'
+                    sh 'docker rm -f clair'
+                }
+            }
+        }
+    }
+}
