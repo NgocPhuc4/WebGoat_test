@@ -40,7 +40,7 @@ pipeline {
                     // Download the clair-scanner if not already present.
                     sh '''
                         if [ ! -f clair-scanner ]; then
-                            wget -qO clair-scanner https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+                            curl -O clair-scanner https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64
                             chmod +x clair-scanner
                         fi
                     '''
