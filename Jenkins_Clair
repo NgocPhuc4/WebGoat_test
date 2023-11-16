@@ -47,7 +47,7 @@ pipeline {
         
                     // Get Docker's bridge network gateway and run the scanner.
                     sh '''
-                        ./clair-scanner webgoat/webgoat
+                        ./clair-scanner webgoat/webgoat:latest
                     '''
                 }
             }
