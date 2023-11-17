@@ -31,7 +31,7 @@ pipeline {
         }
         stage('Analyze with Grype') {
             steps {
-                grypeScan scanDest: 'sbom:/var/jenkins_home/tools/SBOM.spdx.json', repName: 'Grype_report.txt', autoInstall:true
+                grypeScan scanDest: 'sbom:/var/jenkins_home/tools/SBOM.spdx.json', repName: 'GrypeSyft_report.json', autoInstall:true
                         
             }
         }
