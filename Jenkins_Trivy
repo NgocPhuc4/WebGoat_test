@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "maven"
+    }
+    
+
+    stages {
+        stage('Build the Image') {
+            steps {
+                // Build the Container Image for scanning
+                sh "docker build -f Dockerfile . -t webgoat/webgoat"
+                  }
+        }
+        stage('Image Scanning with Trivy') {
+            steps {
+                sh 'docker run --name trivy aquasec/trivy image webgoat/webgoat --scanners vuln,secret,config -s HIGH,CRITICAL --format template --template @./html.tpl -o Trivy_report.html'
+            }
+        
+            post {
+                always {
+                    archiveArtifacts 'Trivy_report.html'
+                    // Clean up, remove the Trivy containers.
+                    sh 'docker rm -f trivy'
+                }
+            }
+        }
+    }
+}
