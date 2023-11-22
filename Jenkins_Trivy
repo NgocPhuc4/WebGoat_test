@@ -16,7 +16,7 @@ pipeline {
         }
         stage('Image Scanning with Trivy') {
             steps {
-                sh 'docker run --name trivy aquasec/trivy image webgoat/webgoat --scanners vuln,secret,config -s HIGH,CRITICAL --format template --template @./html.tpl -o Trivy_report.html'
+                sh 'docker run --name trivy aquasec/trivy image webgoat/webgoat --format template --template @./html.tpl -o Trivy_report.html'
             }
         
             post {
